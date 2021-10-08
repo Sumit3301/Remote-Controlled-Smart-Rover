@@ -22,11 +22,11 @@ gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 cv2.imshow('Grayscale',gray)
 
 #reducing noise in the image
-gauss=cv2.GaussianBlur(gray,(5,5),0)
+gauss=cv2.GaussianBlur(gray,(7,7),0)
 
 #Canny Edge detection
 
-edge=cv2.Canny(gray,50,150)
+edge=cv2.Canny(gray,150,255)
 cv2.imshow('Canny',edge)
 
 '''
@@ -43,9 +43,29 @@ color_select[thresh]=[0,0,0]
 cv2.imshow('thresholding',color_select)
 '''
 
+# Segmentation or masking of image
+
+ 
+    # frame.shape[0] rows of pixels the frame has.
+height = edge.shape[0]
+width=edge.shape[1]
+    # Creates a triangular polygon for the mask defined by three (x, y) coordinates
+
+polygons = np.array([
+                            [(120,531), (480, 310), (876, 540)]
+                        ])
+    # Creates an image filled with zero intensities with the same dimensions as the frame
+mask = np.zeros_like(edge)
+    # Allows the mask to be filled with values of 1 and the other areas to be filled with values of 0
+cv2.fillPoly(mask, polygons, 255)
+    # A bitwise and operation between the mask and frame keeps only the triangular area of the frame
+segment = cv2.bitwise_and(edge, mask,1)
+cv2.imshow('segment',segment)
 
 #cv2.imshow(gray)
+# Hough Transformation
 
-
+new = img.copy()
+    
 
 cv2.waitKey(0)
