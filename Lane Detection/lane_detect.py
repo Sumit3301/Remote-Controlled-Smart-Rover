@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 #Reading the image
 
-img=cv2.imread('solidWhiteRight.jpg')
+img=cv2.imread('solidYellowCurve.jpg')
 cv2.imshow('Orignal',img)
 
 color_select=np.copy(img)
@@ -45,27 +45,40 @@ cv2.imshow('thresholding',color_select)
 
 # Segmentation or masking of image
 
- 
-    # frame.shape[0] rows of pixels the frame has.
+# frame.shape[0] rows of pixels the frame has.
 height = edge.shape[0]
 width=edge.shape[1]
-    # Creates a triangular polygon for the mask defined by three (x, y) coordinates
+
+ # Creates a triangular polygon for the mask defined by three (x, y) coordinates
 
 polygons = np.array([
                             [(120,531), (480, 310), (876, 540)]
                         ])
-    # Creates an image filled with zero intensities with the same dimensions as the frame
+
+# Creates an image filled with zero intensities with the same dimensions as the frame
 mask = np.zeros_like(edge)
-    # Allows the mask to be filled with values of 1 and the other areas to be filled with values of 0
+
+# Allows the mask to be filled with values of 1 and the other areas to be filled with values of 0
 cv2.fillPoly(mask, polygons, 255)
-    # A bitwise and operation between the mask and frame keeps only the triangular area of the frame
+
+# A bitwise and operation between the mask and frame keeps only the triangular area of the frame
 segment = cv2.bitwise_and(edge, mask,1)
 cv2.imshow('segment',segment)
 
-#cv2.imshow(gray)
-# Hough Transformation
 
+
+#cv2.imshow(gray)
+
+# Hough Transformation to show the lanes of the image
+
+lines = cv2.HoughLinesP(segment, 1, np.pi/180, 30, maxLineGap=300)
 new = img.copy()
-    
+for line in lines:
+  x1, y1, x2, y2 = line[0]
+  cv2.line(new, (x1, y1), (x2, y2), (255, 0, 0), 3)
+
+cv2.imshow('New',new)
+
+
 
 cv2.waitKey(0)
